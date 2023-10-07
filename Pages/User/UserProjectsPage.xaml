@@ -1,0 +1,104 @@
+﻿<Page x:Class="ProjectManager.App.Pages.User.UserProjectsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:converters="clr-namespace:ProjectManager.App.Converters"
+      mc:Ignorable="d"
+      d:DesignHeight="550" d:DesignWidth="1000"
+      d:Background="White"
+      Title="UserProjectsPage">
+
+    <Page.Resources>
+
+        <converters:ItemCountToVisibilityConverter x:Key="ItemCountToVisibility" />
+        <converters:GetCurrentStatusByIdConverter x:Key="GetCurrentStatusByIdConverter" />
+        <converters:IdStatusToVisibilityConverter x:Key="IdStatusToVisibilityConverter" />
+        <converters:DeadlineDateConverter x:Key="DeadlineDateConverter" />
+
+        <DataTemplate x:Key="ProjectTemplate">
+            <Grid MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Page}}" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="16" Margin="0,0,0,5" />
+
+                <TextBlock Text="{Binding Description}" Margin="0,0,0,10" TextWrapping="Wrap" Grid.Row="1" />
+
+                <TextBlock Grid.Row="2"
+                           Text="{Binding IdStatus, Converter={StaticResource GetCurrentStatusByIdConverter}, StringFormat='Статус: {0}'}" />
+
+                <TextBlock Grid.Row="3" Text="{Binding AddDate, StringFormat='Добавлено: {0:dd.MM.yyyy}'}" />
+
+                <TextBlock Grid.Row="4"
+                           Text="{Binding DeadlineDate, Converter={StaticResource DeadlineDateConverter}, StringFormat='Дедлайн: {0}'}" />
+
+                <Button Tag="{Binding IdProject}" Content="Взять проект" Click="TakeProjectButton_OnClick"
+                        Margin="0,10,0,0" Grid.Row="5"
+                        Visibility="{Binding IdStatus, Converter={StaticResource IdStatusToVisibilityConverter}}"
+                        Width="150" HorizontalAlignment="Left" />
+
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="20*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="MyProjectsButton"
+                    Click="MyProjectsButton_OnClick"
+                    Content="Мои проекты"
+                    Grid.Column="0"
+                    Margin="5" />
+
+            <Button x:Name="AllProjects"
+                    Content="Все проекты"
+                    IsEnabled="False"
+                    Grid.Column="1"
+                    Margin="5" />
+
+            <Button x:Name="ProfileButton"
+                    Click="ProfileButton_OnClick"
+                    Content="Профиль"
+                    Grid.Column="2"
+                    Margin="5" />
+        </Grid>
+
+        <ListView Grid.Row="1"
+                  Margin="5"
+                  x:Name="AllProjectsListView"
+                  Loaded="AllProjectsListView_OnLoaded"
+                  ItemTemplate="{StaticResource ProjectTemplate}">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+        </ListView>
+
+        <TextBlock Grid.Row="1"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   FontSize="30"
+                   x:Name="EmptyProjectsTextBlock"
+                   Text="Проекты не найдены.."
+                   Visibility="{Binding Items.Count, ElementName=AllProjectsListView, Converter={StaticResource ItemCountToVisibility}}" />
+    </Grid>
+</Page>

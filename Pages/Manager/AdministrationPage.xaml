@@ -1,0 +1,86 @@
+﻿<Page x:Class="ProjectManager.App.Pages.Manager.AdministrationPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:converters="clr-namespace:ProjectManager.App.Converters"
+      mc:Ignorable="d"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      d:Background="White"
+      Title="AdministrationPage"
+      Loaded="AdministrationPage_OnLoaded">
+
+    <Page.Resources>
+        <converters:IdRoleToRoleDescription x:Key="IdRoleToRoleDescription" />
+        <converters:IdStatusToStatusDescription x:Key="IdStatusToStatusDescription" />
+
+    </Page.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="2*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Роли" VerticalAlignment="Center" HorizontalAlignment="Center"
+                   FontSize="25" />
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="Статусы" VerticalAlignment="Center" HorizontalAlignment="Center"
+                   FontSize="25" />
+
+        <DataGrid x:Name="RolesDataGrid" Grid.Row="2" Margin="5" AutoGenerateColumns="False" CanUserAddRows="True"
+                  CanUserDeleteRows="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Описание роли"
+                                    Binding="{Binding IdRole, Converter={StaticResource IdRoleToRoleDescription}}"
+                                    IsReadOnly="True" />
+                <DataGridTemplateColumn Header="Нименование">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <DataGrid x:Name="StatusesDataGrid" Grid.Row="2" Grid.Column="1" Margin="5" AutoGenerateColumns="False"
+                  CanUserAddRows="True" CanUserDeleteRows="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Описание статуса"
+                                    Binding="{Binding IdStatus, Converter={StaticResource IdStatusToStatusDescription}}"
+                                    IsReadOnly="True" />
+                <DataGridTemplateColumn Header="Название">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+
+        <Button Click="ReturnButton_OnClick" Margin="5" Content="Вернуться" HorizontalAlignment="Left"
+                VerticalAlignment="Center" />
+        <TextBlock Text="Управление" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Grid.ColumnSpan="2" />
+        <Button Click="SubmitButton_OnClick" Content="Обновить" Grid.Row="3" Grid.ColumnSpan="2" Margin="5" />
+    </Grid>
+</Page>
